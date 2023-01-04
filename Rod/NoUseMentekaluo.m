@@ -7,11 +7,11 @@ length = 100;
 width = 2;
 height = 1.5;
 crossAera = width * height;
-E =14;
+E =14000;
 kSpring = 0.3;
 
 %%杆单元总数
-TopElementTotal =4;
+TopElementTotal =1;
 
 %%初始化刚平面
 RigidLength = 200;%%刚体水平面的长度
@@ -32,7 +32,7 @@ disX = zeros(1,TopElementTotal+1);
 y = zeros(1,TopElementTotal+1);%用来画图
 bond = zeros(1,ButtomElementTotal +1);
 % for i= 1:TopElementTotal
-     bond(1) = 1;
+%      bond(i) = i;
 % end
 
 
@@ -41,7 +41,7 @@ for i= 1:(TopElementTotal+1)
 end
 
 %%开始求解
-vEnd = 10;
+vEnd = 50;
 T = 10;
 dt = 0.1;
 du = vEnd / T * dt;
@@ -68,7 +68,7 @@ while t < T
     end
      %Reaction = totalSpringForce + F;
      Reaction = Reaction + F;
-     fprintf(fid,'%g\t',x(1));
+     fprintf(fid,'%g\t',Reaction(TopElementTotal+1));
      fprintf(fid,'\r\n');
      totalSpringForce = 0;
    %% [detaTmin,bond,Num]=calstate(TopElementTotal,ButtomElementTotal,x,x_Rigid,bond,kSpring,Num);

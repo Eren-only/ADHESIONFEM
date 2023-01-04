@@ -20,7 +20,7 @@ cal_K = KK;
 
 for i=1:(ButtomElementTotal+1) 
     if(bond(i) ~= 0)
-       KK(bond(i),bond(i))=KK(bond(i),bond(i))+ kSpring; 
+       KK(bond(i),bond(i))=KK(bond(i),bond(i))+ 0.5*kSpring; 
     end
 %     KK(i*3-1,i*3-1)=KK(i*3-1,i*3-1)+ kSpring;
 end
@@ -52,9 +52,9 @@ end
 %    end
 % end
 
-% load(1) = 0;
-% KK(1,2)=0;
-% KK(2,1)=0;
+load(1) = 0;
+KK(1,2)=0;
+KK(2,1)=0;
 
 %%%加位移
 load(TopElementTotal+1)=10^10*KK((TopElementTotal+1),(TopElementTotal+1))*du;
@@ -81,10 +81,10 @@ KK((TopElementTotal+1),(TopElementTotal+1))=10^10*KK((TopElementTotal+1),(TopEle
 %%%
 
  %%%%%%%%%求解节点位移
- %deltau=(load/KK)';
+ deltau=(load/KK)';
 
- load = sparse(load');
- deltau = solveEquation22(KK,load,1e-5);
+%  load = sparse(load');
+%  deltau = solveEquation22(KK,load,1e-5);
  
  %%%%%计算每个节点的位移
 % for i=1:(TopElementTotal+1)
