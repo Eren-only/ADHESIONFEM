@@ -52,9 +52,9 @@ end
 %    end
 % end
 
-load(1) = 0;
-KK(1,2)=0;
-KK(2,1)=0;
+% load(1) = 0;
+% KK(1,2)=0;
+% KK(2,1)=0;
 
 %%%º”Œª“∆
 load(TopElementTotal+1)=10^10*KK((TopElementTotal+1),(TopElementTotal+1))*du;

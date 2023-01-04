@@ -4,14 +4,14 @@ tic
 %%
 %%初始化杆参数
 length = 100;
-width = 1.5;
-height = 2;
+width = 2;
+height = 1.5;
 crossAera = width * height;
 E =14;
 kSpring = 0.3;
 
 %%杆单元总数
-TopElementTotal =1;
+TopElementTotal =4;
 
 %%初始化刚平面
 RigidLength = 200;%%刚体水平面的长度
@@ -31,19 +31,23 @@ sigma = zeros(1,TopElementTotal+1);
 disX = zeros(1,TopElementTotal+1);
 y = zeros(1,TopElementTotal+1);%用来画图
 bond = zeros(1,ButtomElementTotal +1);
+% for i= 1:TopElementTotal
+     bond(1) = 1;
+% end
+
 
 for i= 1:(TopElementTotal+1)
     x(i) = (i-1)/TopElementTotal * length;
 end
 
 %%开始求解
-vEnd = 100;
+vEnd = 10;
 T = 10;
 dt = 0.1;
 du = vEnd / T * dt;
 U = 0;
 t = dt;
-x(TopElementTotal+1) = x(TopElementTotal+1) + du;
+%x(TopElementTotal+1) = x(TopElementTotal+1) + du;
 
 result="测试.txt";
 fid = fopen(result,'w');
@@ -53,25 +57,26 @@ while t < T
     for i=1:(TopElementTotal+1)
          x(i) = x(i) + disX(i);
     end
-      
+   
     %%支反力应该等于弹簧力加内力，弹簧力用位移算当前时刻，内力需要叠加
     for k = 1 : ButtomElementTotal+1
         if(bond(k) ~= 0)
-            fSpringForce(x(bond(k))) = kSpring * (x(bond(k)) - x_Rigid(k));
-            totalSpringForce = totalSpringForce + fSpringForce(x(bond(k))); 
+            fSpringForce(bond(k)) = kSpring * (x(bond(k)) - x_Rigid(k));
+            totalSpringForce = totalSpringForce + fSpringForce(bond(k)); 
         end
 
     end
      %Reaction = totalSpringForce + F;
      Reaction = Reaction + F;
-     fprintf(fid,'%g\t',Reaction(TopElementTotal+1));
+     fprintf(fid,'%g\t',x(1));
      fprintf(fid,'\r\n');
+     totalSpringForce = 0;
    %% [detaTmin,bond,Num]=calstate(TopElementTotal,ButtomElementTotal,x,x_Rigid,bond,kSpring,Num);
     U = U + du;
     t = t + dt;
 
     du = vEnd / T * dt;
-    x(TopElementTotal+1) = x(TopElementTotal+1) + du;
+    %x(TopElementTotal+1) = x(TopElementTotal+1) + du;
     
 end
 
