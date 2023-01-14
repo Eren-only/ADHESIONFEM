@@ -1,4 +1,4 @@
-function [detaTmin,bond,Num]=calstate(TopElementTotal,ButtomElementTotal,x,x_Rigid,bond,kSpring,Num)
+function [detaTmin,bond,Num]=calstate(TopElementTotal,ButtomElementTotal,x,x_Rigid,bond,kSpring,Num,K_on0, K_off0,KBT,Fb,alpha)
     rand('seed',sum(100*clock));
    
     detaTmin = 100;
@@ -8,14 +8,8 @@ function [detaTmin,bond,Num]=calstate(TopElementTotal,ButtomElementTotal,x,x_Rig
     ChangeButtonId = 0;
     isConnect = 0;
     
-    K_on0 = 100;
-    K_off0 = 50;
-    KBT = 4;
-    Fb = 9;
     Koff = zeros(1,ButtomElementTotal+1);%连接需要断开的
     Kon = zeros(TopElementTotal,ButtomElementTotal+1);%断开需要连接的，！！！杆尾部不需要连接
-    
-    alpha = 0.1;%用来抑制出现连接交叉的情况
 
     for index1 = 1 : ButtomElementTotal+1
         randNum = rand;
@@ -53,7 +47,7 @@ function [detaTmin,bond,Num]=calstate(TopElementTotal,ButtomElementTotal,x,x_Rig
                    if dist >= 0
                       Kon(index4,index1) = K_on0 * exp(-0.5*kSpring*dist^2/KBT); 
                    else
-                      Kon(index4,index1) = alpha * K_on0*exp(-0.5*kSpring*dist^2/KBT); 
+                      Kon(index4,index1) =  alpha*K_on0*exp(-0.5*kSpring*dist^2/KBT); 
                    end
                 end
             end   
@@ -77,7 +71,6 @@ function [detaTmin,bond,Num]=calstate(TopElementTotal,ButtomElementTotal,x,x_Rig
                         ChangeButtonId = ButtonId;
                         isConnect = 1;
                     end
-
             end    
         end
     end

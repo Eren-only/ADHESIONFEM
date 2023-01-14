@@ -5,10 +5,9 @@ tic
 %%初始化杆参数
 length = 100;
 width = 4;
-height = 3;
+height = 3;  
 crossAera = width * height;
 E =14000;%单位Mpa
-kSpring = 0.3;%pn/nm
 TopElementTotal =100;%杆单元总数 
 x=zeros(1,TopElementTotal+1);%%每个节点x坐标
 for i= 1:(TopElementTotal+1)
@@ -29,6 +28,14 @@ Num = TopElementTotal/2;%弹簧连接数
 for i= 1:1:Num
      bond(i) = i;
 end
+
+%初始化界面参数
+K_on0 = 10;
+K_off0 = 0.01;
+KBT = 4;
+Fb = 1;
+alpha = 0.01;%用来抑制出现连接交叉的情况,越小抑制效果越好
+kSpring = 0.03;%pn/nm  k为0.03时，相邻两节点的kon相差并不大
 
 %初始化输出变量
 F = zeros(1,TopElementTotal+1);%%每个节点内力
@@ -51,7 +58,12 @@ t = dt;
 
 result="测试.txt";
 fid = fopen(result,'w');
-while t < T
+fprintf(fid,'%g\t',0);
+fprintf(fid,'%g\t',Num);
+fprintf(fid,'%g\t',0);
+fprintf(fid,'\r\n');
+
+while t <= T
 
     [F,disX]=FEM(du,x,x_Rigid,TopElementTotal,ButtomElementTotal,crossAera,E,bond,kSpring); 
     for i=1:(TopElementTotal+1)
@@ -67,10 +79,12 @@ while t < T
     end
 
     Reaction = Reaction + F;%计算内力需要不断叠加
+    fprintf(fid,'%g\t',t);
+    fprintf(fid,'%g\t',Num);
     fprintf(fid,'%g\t',totalSpringForce);
     fprintf(fid,'\r\n');
     totalSpringForce = 0;%将总弹簧力置0
-    [detaTmin,bond,Num]=calstate(TopElementTotal,ButtomElementTotal,x,x_Rigid,bond,kSpring,Num);
+    [detaTmin,bond,Num]=calstate(TopElementTotal,ButtomElementTotal,x,x_Rigid,bond,kSpring,Num,K_on0, K_off0,KBT,Fb,alpha);
     bond
     U = U + du;
     dt = detaTmin;
@@ -78,6 +92,37 @@ while t < T
     du = vEnd / T * dt;
 end
 
+U
 fclose(fid);
+
+
+%%
+%%绘图
+
+result1="测试.txt";
+fileID=fopen(result1);
+
+Infortxt=textscan(fileID,'%f %f %f');
+
+fclose(fileID);
+
+format compact
+
+celldisp(Infortxt);
+
+
+subplot(1,2,1)
+plot(Infortxt{1},Infortxt{2});
+title(['velocity is ',num2str(vEnd/T),'nm/s']);
+xlabel('时间 s');
+ylabel('连接个数');
+    
+subplot(1,2,2)
+plot(Infortxt{1},Infortxt{3});
+title(['velocity is ',num2str(vEnd/T),'nm/s']);
+xlabel('时间 s');
+ylabel('支反力pN');
+
+
 toc
 
