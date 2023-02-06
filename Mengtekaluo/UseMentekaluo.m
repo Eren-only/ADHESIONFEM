@@ -7,7 +7,7 @@ length = 100;
 width = 4;
 height = 3;  
 crossAera = width * height;
-E =14000;%单位Mpa
+E =14000;%单位Mpa  适用于弹性模量大，弹簧系数小的对象
 TopElementTotal =100;%杆单元总数 
 x=zeros(1,TopElementTotal+1);%%每个节点x坐标
 for i= 1:(TopElementTotal+1)
@@ -31,7 +31,7 @@ end
 
 %初始化界面参数
 K_on0 = 10;
-K_off0 = 0.01;
+K_off0 = 1;
 KBT = 4;
 Fb = 1;
 alpha = 0.01;%用来抑制出现连接交叉的情况,越小抑制效果越好
@@ -93,6 +93,43 @@ while t <= T
 end
 
 U
+
+
+t = T;
+vEnd = 50;
+dt = 0.1;
+du = -vEnd / T * dt;
+while t <= 1.5*T
+
+    [F,disX]=FEM(du,x,x_Rigid,TopElementTotal,ButtomElementTotal,crossAera,E,bond,kSpring); 
+    for i=1:(TopElementTotal+1)
+         x(i) = x(i) + disX(i);
+    end
+   
+    %%只有右边约束时，根据静力平衡，支反力应该等于弹簧力总和，弹簧力用位移算当前时刻
+    for k = 1 : ButtomElementTotal+1
+        if(bond(k) ~= 0)
+            fSpringForce(bond(k)) = kSpring * (x(bond(k)) - x_Rigid(k));
+            totalSpringForce = totalSpringForce + fSpringForce(bond(k)); 
+        end
+    end
+
+    Reaction = Reaction + F;%计算内力需要不断叠加
+    fprintf(fid,'%g\t',t);
+    fprintf(fid,'%g\t',Num);
+    fprintf(fid,'%g\t',totalSpringForce);
+    fprintf(fid,'\r\n');
+    totalSpringForce = 0;%将总弹簧力置0
+    [detaTmin,bond,Num]=calstate(TopElementTotal,ButtomElementTotal,x,x_Rigid,bond,kSpring,Num,K_on0, K_off0,KBT,Fb,alpha);
+    bond
+    U = U + du;
+    dt = detaTmin;
+    t = t + dt;
+    du = -vEnd / T * dt;
+end
+
+U
+
 fclose(fid);
 
 
@@ -122,6 +159,7 @@ plot(Infortxt{1},Infortxt{3});
 title(['velocity is ',num2str(vEnd/T),'nm/s']);
 xlabel('时间 s');
 ylabel('支反力pN');
+
 
 
 toc

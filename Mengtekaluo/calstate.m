@@ -21,7 +21,7 @@ function [detaTmin,bond,Num]=calstate(TopElementTotal,ButtomElementTotal,x,x_Rig
              %求出连接需要断开的时间
              t = log(1/randNum)/Koff(index1);
              if(t <= 0)
-                 test="t.txt";
+                 test="error.txt";
                  fid = fopen(test,'w');
              end
              %求出连接需要断开的最小时间，以及对应的id
