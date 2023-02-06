@@ -94,41 +94,41 @@ end
 
 U
 
-
-t = T;
-vEnd = 50;
-dt = 0.1;
-du = -vEnd / T * dt;
-while t <= 1.5*T
-
-    [F,disX]=FEM(du,x,x_Rigid,TopElementTotal,ButtomElementTotal,crossAera,E,bond,kSpring); 
-    for i=1:(TopElementTotal+1)
-         x(i) = x(i) + disX(i);
-    end
-   
-    %%只有右边约束时，根据静力平衡，支反力应该等于弹簧力总和，弹簧力用位移算当前时刻
-    for k = 1 : ButtomElementTotal+1
-        if(bond(k) ~= 0)
-            fSpringForce(bond(k)) = kSpring * (x(bond(k)) - x_Rigid(k));
-            totalSpringForce = totalSpringForce + fSpringForce(bond(k)); 
-        end
-    end
-
-    Reaction = Reaction + F;%计算内力需要不断叠加
-    fprintf(fid,'%g\t',t);
-    fprintf(fid,'%g\t',Num);
-    fprintf(fid,'%g\t',totalSpringForce);
-    fprintf(fid,'\r\n');
-    totalSpringForce = 0;%将总弹簧力置0
-    [detaTmin,bond,Num]=calstate(TopElementTotal,ButtomElementTotal,x,x_Rigid,bond,kSpring,Num,K_on0, K_off0,KBT,Fb,alpha);
-    bond
-    U = U + du;
-    dt = detaTmin;
-    t = t + dt;
-    du = -vEnd / T * dt;
-end
-
-U
+% 
+% t = T;
+% vEnd = 50;
+% dt = 0.1;
+% du = -vEnd / T * dt;
+% while t <= 1.5*T
+% 
+%     [F,disX]=FEM(du,x,x_Rigid,TopElementTotal,ButtomElementTotal,crossAera,E,bond,kSpring); 
+%     for i=1:(TopElementTotal+1)
+%          x(i) = x(i) + disX(i);
+%     end
+%    
+%     %%只有右边约束时，根据静力平衡，支反力应该等于弹簧力总和，弹簧力用位移算当前时刻
+%     for k = 1 : ButtomElementTotal+1
+%         if(bond(k) ~= 0)
+%             fSpringForce(bond(k)) = kSpring * (x(bond(k)) - x_Rigid(k));
+%             totalSpringForce = totalSpringForce + fSpringForce(bond(k)); 
+%         end
+%     end
+% 
+%     Reaction = Reaction + F;%计算内力需要不断叠加
+%     fprintf(fid,'%g\t',t);
+%     fprintf(fid,'%g\t',Num);
+%     fprintf(fid,'%g\t',totalSpringForce);
+%     fprintf(fid,'\r\n');
+%     totalSpringForce = 0;%将总弹簧力置0
+%     [detaTmin,bond,Num]=calstate(TopElementTotal,ButtomElementTotal,x,x_Rigid,bond,kSpring,Num,K_on0, K_off0,KBT,Fb,alpha);
+%     bond
+%     U = U + du;
+%     dt = detaTmin;
+%     t = t + dt;
+%     du = -vEnd / T * dt;
+% end
+% 
+% U
 
 fclose(fid);
 
