@@ -2,8 +2,10 @@ function [F,disX]=FEM(du,x,x_Rigid,TopElementTotal,ButtomElementTotal,crossAera,
 
 %%%%%平面梁系有限元计算变形
 %整体单元矩阵组装
-KK=sparse(TopElementTotal+1, TopElementTotal+1);
-%KK=zeros(TopElementTotal+1,TopElementTotal+1);
+KK=zeros(TopElementTotal+1,TopElementTotal+1);%使用直接法
+%KK=sparse(TopElementTotal+1, TopElementTotal+1);%使用共轭梯度法
+
+
 load=zeros(1,TopElementTotal+1);
 disX=zeros(1,TopElementTotal+1);
 oriLength = zeros(1,TopElementTotal);
