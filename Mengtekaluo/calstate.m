@@ -82,6 +82,5 @@ function [detaTmin,bond,Num]=calstate(TopElementTotal,ButtomElementTotal,x,x_Rig
         bond(ChangeButtonId) = 0;
         Num = Num - 1;
     end
-       
-   detaTmin
+
 end

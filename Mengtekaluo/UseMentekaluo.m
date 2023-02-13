@@ -1,12 +1,12 @@
 clc
 clear
 tic
-
-result="位移速度的影响.txt";
-fid = fopen(result,'w');
-
-
-for count = 1 : 1 : 1000
+% 
+% result="位移速度的影响.txt";
+% fid = fopen(result,'w');
+% 
+% 
+% for count = 1 : 1 : 100
 
 
     %%
@@ -63,12 +63,12 @@ for count = 1 : 1 : 1000
     U = 0;
     t = dt;
 
-    % result="测试.txt";
-    % fid = fopen(result,'w');
-    % fprintf(fid,'%g\t',0);
-    % fprintf(fid,'%g\t',Num);
-    % fprintf(fid,'%g\t',0);
-    % fprintf(fid,'\r\n');
+    result="测试.txt";
+    fid = fopen(result,'w');
+    fprintf(fid,'%g\t',0);
+    fprintf(fid,'%g\t',Num);
+    fprintf(fid,'%g\t',0);
+    fprintf(fid,'\r\n');
     flag = 1;
     while t <= T
     
@@ -86,18 +86,18 @@ for count = 1 : 1 : 1000
         end
     
         Reaction = Reaction + F;%计算内力需要不断叠加
-%         fprintf(fid,'%g\t',t);
-%         fprintf(fid,'%g\t',Num);
-%         fprintf(fid,'%g\t',totalSpringForce);
-%         fprintf(fid,'\r\n');
-        if(t >= 8 && flag == 1)
-            flag = 0;
-            fprintf(fid,'%g\t',Num);
-            fprintf(fid,'%g\t',totalSpringForce);
-            fprintf(fid,'\r\n');
-            totalSpringForce = 0;%将总弹簧力置0
-        end
-        
+        fprintf(fid,'%g\t',t);
+        fprintf(fid,'%g\t',Num);
+        fprintf(fid,'%g\t',totalSpringForce);
+        fprintf(fid,'\r\n');
+%         if(t >= 8 && flag == 1)
+%             flag = 0;
+%             fprintf(fid,'%g\t',Num);
+%             fprintf(fid,'%g\t',totalSpringForce);
+%             fprintf(fid,'\r\n');
+%             totalSpringForce = 0;%将总弹簧力置0
+%         end
+
         [detaTmin,bond,Num]=calstate(TopElementTotal,ButtomElementTotal,x,x_Rigid,bond,kSpring,Num,K_on0, K_off0,KBT,Fb,alpha);
       
         U = U + du;
@@ -148,35 +148,36 @@ for count = 1 : 1 : 1000
     
     
     
-    %%
-    %%绘图
+    %
+    %绘图
     
-    % result1="测试.txt";
-    % fileID=fopen(result1);
-    % 
-    % Infortxt=textscan(fileID,'%f %f %f');
-    % 
-    % fclose(fileID);
-    % 
-    % format compact
-    % 
-    % celldisp(Infortxt);
-    % 
-    % 
-    % subplot(1,2,1)
-    % plot(Infortxt{1},Infortxt{2});
-    % title(['velocity is ',num2str(vEnd/T),'nm/s']);
-    % xlabel('时间 s');
-    % ylabel('连接个数');
-    %     
-    % subplot(1,2,2)
-    % plot(Infortxt{1},Infortxt{3});
-    % title(['velocity is ',num2str(vEnd/T),'nm/s']);
-    % xlabel('时间 s');
-    % ylabel('支反力pN');
-    % 
-count
-end
-fclose(fid);
+    result1="测试.txt";
+    fileID=fopen(result1);
+    
+    Infortxt=textscan(fileID,'%f %f %f');
+    
+    fclose(fileID);
+    
+    format compact
+    
+    celldisp(Infortxt);
+    
+    
+    subplot(1,2,1)
+    plot(Infortxt{1},Infortxt{2});
+    title(['velocity is ',num2str(vEnd/T),'nm/s']);
+    xlabel('时间 s');
+    ylabel('连接个数');
+        
+    subplot(1,2,2)
+    plot(Infortxt{1},Infortxt{3});
+    title(['velocity is ',num2str(vEnd/T),'nm/s']);
+    xlabel('时间 s');
+    ylabel('支反力pN');
+    fclose(fid);
+
+% end
+% fclose(fid);
+ENDING="结束"
 toc
 
