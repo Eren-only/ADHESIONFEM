@@ -2,24 +2,20 @@ clc
 clear
 tic
 
-result="宽度的影响.txt";
+result="Koff0的影响.txt";
 fid = fopen(result,'w');
 u = 200;
 lastKon0 = 20;
-lastKoff0 = 20;
-lastWidth = 8;
-
+lastKoff0 = 50;
 K_on0 = lastKon0;
 K_off0 = lastKoff0;
-%width = lastWidth;
 vEnd = u;
 
-
-for width = 1 : 1 : lastWidth
+for K_off0 = 10 : 10 : lastKoff0
     totalNum = 0;
     totalForce = 0;
     fprintf(fid,'---------------');
-    fprintf(fid,'%g\t',width);
+    fprintf(fid,'%g\t',K_off0);
     fprintf(fid,'\r\n');
 
     for count = 1 : 1 : 1000
@@ -28,6 +24,7 @@ for width = 1 : 1 : lastWidth
         %%
         %%初始化杆参数
         length = 100;
+        width = 4;
         height = 3;  
         crossAera = width * height;
         E =14000;%单位Mpa  适用于弹性模量大，弹簧系数小的对象
